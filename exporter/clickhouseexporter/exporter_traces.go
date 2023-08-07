@@ -12,6 +12,7 @@ import (
 
 	_ "github.com/ClickHouse/clickhouse-go/v2" // For register database driver.
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	conventions "go.opentelemetry.io/collector/semconv/v1.18.0"
 	"go.uber.org/zap"
@@ -70,7 +71,7 @@ func (e *tracesExporter) pushTraceData(ctx context.Context, td ptrace.Traces) er
 		for i := 0; i < td.ResourceSpans().Len(); i++ {
 			spans := td.ResourceSpans().At(i)
 			res := spans.Resource()
-			resAttr := attributesToMap(res.Attributes())
+			resKeys, resValues := attributesToArrays(res.Attributes())
 			var serviceName string
 			if v, ok := res.Attributes().Get(conventions.AttributeServiceName); ok {
 				serviceName = v.Str()
@@ -81,7 +82,7 @@ func (e *tracesExporter) pushTraceData(ctx context.Context, td ptrace.Traces) er
 				scopeVersion := spans.ScopeSpans().At(j).Scope().Version()
 				for k := 0; k < rs.Len(); k++ {
 					r := rs.At(k)
-					spanAttr := attributesToMap(r.Attributes())
+					spanKeys, spanValues := attributesToArrays(r.Attributes())
 					status := r.Status()
 					eventTimes, eventNames, eventAttrs := convertEvents(r.Events())
 					linksTraceIDs, linksSpanIDs, linksTraceStates, linksAttrs := convertLinks(r.Links())
@@ -94,11 +95,13 @@ func (e *tracesExporter) pushTraceData(ctx context.Context, td ptrace.Traces) er
 						r.Name(),
 						traceutil.SpanKindStr(r.Kind()),
 						serviceName,
-						resAttr,
+						resKeys,
+						resValues,
 						scopeName,
 						scopeVersion,
-						spanAttr,
-						r.EndTimestamp().AsTime().Sub(r.StartTimestamp().AsTime()).Nanoseconds(),
+						spanKeys,
+						spanValues,
+						uint64(r.EndTimestamp().AsTime().Sub(r.StartTimestamp().AsTime()).Nanoseconds()),
 						traceutil.StatusCodeStr(status.Code()),
 						status.Message(),
 						eventTimes,
@@ -121,6 +124,18 @@ func (e *tracesExporter) pushTraceData(ctx context.Context, td ptrace.Traces) er
 	e.logger.Debug("insert traces", zap.Int("records", td.SpanCount()),
 		zap.String("cost", duration.String()))
 	return err
+}
+
+func attributesToArrays(attributes pcommon.Map) ([]string, []string) {
+	keys := make([]string, 0)
+	values := make([]string, 0)
+
+	attributes.Range(func(k string, v pcommon.Value) bool {
+		keys = append(keys, k)
+		values = append(values, v.AsString())
+		return true
+	})
+	return keys, values
 }
 
 func convertEvents(events ptrace.SpanEventSlice) ([]time.Time, []string, []map[string]string) {
@@ -207,10 +222,12 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         SpanName,
                         SpanKind,
                         ServiceName,
-					    ResourceAttributes,
+					    ResourceAttributes.keys,
+						ResourceAttributes.values,
 						ScopeName,
 						ScopeVersion,
-                        SpanAttributes,
+                        SpanAttributes.keys,
+						SpanAttributes.values,
                         Duration,
                         StatusCode,
                         StatusMessage,
@@ -223,6 +240,8 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         Links.Attributes
                         ) VALUES (
                                   ?,
+								  ?,
+								  ?,
                                   ?,
                                   ?,
                                   ?,
