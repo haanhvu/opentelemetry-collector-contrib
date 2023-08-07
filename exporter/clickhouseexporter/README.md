@@ -1,8 +1,8 @@
-This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Array[keys] and Array[values]. The ultimate purpose is to do benchmarking to see which type performs better.
+This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Array[keys] and Array[values]. The ultimate purpose is to do benchmarking to see which type choice performs better.
 
 I just changed the types in the implementation, not the tests. So some tests is probably failing. However, I checked the change locally with a small trace generating experiment. The change worked.
 
-I didn't change to hardcoded schema either. So to test this change, you would need to manually create the table in ClickHouse server side yourself:
+I didn't change the hardcoded schema either. So to test this change, you would need to manually create the table in ClickHouse server side yourself:
 ```
 CREATE TABLE IF NOT EXISTS otel_traces (
      Timestamp DateTime64(9) CODEC(Delta, ZSTD(1)),
@@ -51,3 +51,9 @@ PARTITION BY toDate(Timestamp)
 ORDER BY (ServiceName, SpanName, SpanAttributes.keys, SpanAttributes.values, toUnixTimestamp(Timestamp), Duration, TraceId)
 SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
 ```
+
+To build this change locally:
+`make docker-otelcontribcol`
+
+To run the Docker image of this change:
+`docker run --network host --name otel -p 145.40.99.239:4317:4317 -p 145.40.99.239:8888:8888 -v $(pwd)/config.yaml:/etc/otel/config.yaml otelcontribcol`
