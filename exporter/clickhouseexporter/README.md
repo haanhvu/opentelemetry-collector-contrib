@@ -56,5 +56,4 @@ To build this change locally:
 `make docker-otelcontribcol`
 
 To run the Docker image of this change:
-`docker run --network host --name otel -p 145.40.99.239:4317:4317 -p 145.40.99.239:8888:8888 -v $(pwd)/exporter
-/clickhouseexporter/config.yaml:/etc/otel/config.yaml otelcontribcol`
+`docker run --network host --name otel -p 145.40.99.239:4317:4317 -p 145.40.99.239:8888:8888 -v $(pwd)/exporter/clickhouseexporter/config.yaml:/etc/otel/config.yaml otelcontribcol`
