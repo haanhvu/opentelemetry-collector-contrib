@@ -56,4 +56,4 @@ To build this change locally:
 `make docker-otelcontribcol`
 
 To run the Docker image of this change:
-`docker run --network host --name otel -p 145.40.80.230:4317:4317 -p 145.40.80.230:8888:8888 -v $(pwd)/config.yaml:/etc/otel/config.yaml otelcontribcol`
+`docker run --network host --name otel -p 147.28.141.245:4317:4317 -p 147.28.141.245:8888:8888 -v $(pwd)/config.yaml:/etc/otel/config.yaml otelcontribcol`
