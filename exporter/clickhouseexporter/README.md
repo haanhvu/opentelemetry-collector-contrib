@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS otel_traces (
      INDEX idx_span_attr_value SpanAttributes.values TYPE bloom_filter(0.01) GRANULARITY 1,
      INDEX idx_duration Duration TYPE minmax GRANULARITY 1
 ) ENGINE MergeTree()
+
 PARTITION BY toDate(Timestamp)
 ORDER BY (ServiceName, SpanAttributes.keys, SpanAttributes.values, SpanName, toUnixTimestamp(Timestamp), Duration, TraceId)
 SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
