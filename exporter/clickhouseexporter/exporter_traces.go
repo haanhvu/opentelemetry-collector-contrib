@@ -213,7 +213,13 @@ ORDER BY (ServiceName, SpanName, toUnixTimestamp(Timestamp), TraceId)
 SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
 `
 	// language=ClickHouse SQL
-	insertTracesSQLTemplate = `INSERT INTO %s (
+	insertTracesSQLTemplate = `INSERT INTO %s 
+ 			SETTINGS
+    				async_insert = 1,
+    				async_insert_max_data_size = 350000000,
+    				async_insert_max_query_number = 100000,
+    				async_insert_busy_timeout_ms = 1000
+ 			(
                         Timestamp,
                         TraceId,
                         SpanId,
@@ -222,12 +228,12 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         SpanName,
                         SpanKind,
                         ServiceName,
-					    ResourceAttributes.keys,
-						ResourceAttributes.values,
-						ScopeName,
-						ScopeVersion,
+			ResourceAttributes.keys,
+			ResourceAttributes.values,
+			ScopeName,
+			ScopeVersion,
                         SpanAttributes.keys,
-						SpanAttributes.values,
+			SpanAttributes.values,
                         Duration,
                         StatusCode,
                         StatusMessage,
@@ -240,8 +246,8 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         Links.Attributes
                         ) VALUES (
                                   ?,
-								  ?,
-								  ?,
+				  ?,
+				  ?,
                                   ?,
                                   ?,
                                   ?,
