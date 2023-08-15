@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 147.28.183.115:4317
+        endpoint: 139.178.81.65:4317
 
 exporters:
   clickhouse:
@@ -17,7 +17,7 @@ exporters:
       max_interval: 30s
       max_elapsed_time: 300s
     sending_queue:
-      queue_size: 1000000000
+      queue_size: 100000000
 
 service:
   pipelines:
