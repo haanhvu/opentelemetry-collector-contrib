@@ -240,8 +240,8 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         Links.Attributes
                         ) SETTINGS
     				async_insert = 1,
-				async_insert_max_data_size = 40000000,
-    				async_insert_busy_timeout_ms = 1000
+				async_insert_max_data_size = 20000000,
+    				async_insert_busy_timeout_ms = 500
 			VALUES (
                                   ?,
 				  ?,
