@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 147.28.183.115:4317
+        endpoint: 139.178.81.65:4317
 
 exporters:
   clickhouse:
