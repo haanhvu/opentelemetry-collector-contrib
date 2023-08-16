@@ -4,11 +4,6 @@ receivers:
       grpc:
         endpoint: 147.75.87.107:4317
 
-processors:
-  batch:
-    timeout: 5s
-    send_batch_size: 1000
-
 exporters:
   clickhouse:
     endpoint: tcp://147.75.84.35:9000?dial_timeout=10s&compress=lz4
@@ -22,14 +17,12 @@ exporters:
       max_interval: 30s
       max_elapsed_time: 300s
     sending_queue:
-      queue_size: 200000
+      queue_size: 1000000
 
 service:
   pipelines:
     traces:
       receivers:
       - otlp
-      processors:
-      - batch
       exporters:
       - clickhouse
