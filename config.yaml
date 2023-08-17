@@ -6,14 +6,14 @@ receivers:
 
 exporters:
   clickhouse:
-    endpoint: tcp://136.144.49.85:9000?dial_timeout=10s&compress=lz4
+    endpoint: http://136.144.49.85:9000?dial_timeout=10s&compress=lz4
     connection_params:
- 	    async_insert: 1
-   	  wait_for_async_insert: 1
+      async_insert: 1
+      wait_for_async_insert: 1
       async_insert_threads: 100
-    	async_insert_max_data_size: 40000000
-    	async_insert_busy_timeout_ms: 1000
-			async_insert_deduplicate: 0
+      async_insert_max_data_size: 40000000
+      async_insert_busy_timeout_ms: 1000
+      async_insert_deduplicate: 0
     username: default
     database: default
     traces_table_name: otel_traces
