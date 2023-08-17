@@ -240,8 +240,9 @@ SETTINGS index_granularity=8192, ttl_only_drop_parts = 1;
                         Links.Attributes
                         ) SETTINGS
     				async_insert = 1,
-				async_insert_threads = 100,
-				async_insert_deduplicate = 0
+				async_insert_threads = 200,
+				async_insert_deduplicate = 0,
+    				async_insert_busy_timeout_ms = 100
 			VALUES (
                                   ?,
 				  ?,
