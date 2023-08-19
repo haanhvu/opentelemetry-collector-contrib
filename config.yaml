@@ -2,11 +2,16 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 86.109.5.33:4317
+        endpoint: 147.75.84.201:4317
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1000
 
 exporters:
   clickhouse:
-    endpoint: tcp://86.109.5.37:9000?dial_timeout=10s&compress=lz4
+    endpoint: tcp://145.40.68.89:9000?dial_timeout=10s&compress=lz4
     username: default
     database: default
     traces_table_name: otel_traces
@@ -17,12 +22,14 @@ exporters:
       max_interval: 30s
       max_elapsed_time: 300s
     sending_queue:
-      queue_size: 1000000
+      queue_size: 100000
 
 service:
   pipelines:
     traces:
       receivers:
       - otlp
+      processors:
+      - batch
       exporters:
       - clickhouse
