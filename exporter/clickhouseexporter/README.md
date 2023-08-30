@@ -1,8 +1,8 @@
-This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Array[key] and Array[value]. The ultimate purpose is to do benchmarking to see which type choice performs better.
+This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Nested (keys, values), and the type of duration from Int64 to UInt64. The ultimate purpose is to do benchmarking to see which type choices performs better.
 
-I just changed the types in the implementation, not the tests. So some tests is probably failing. However, I checked the change locally with a small trace generating experiment. The change worked.
+I just changed the types in the implementation, not the tests. So some tests are probably failing. Regardless, I checked the change locally with a small trace generating experiment. The change worked.
 
-I didn't change the hardcoded schema either. So to test this change, you would need to manually create the table in ClickHouse server yourself:
+I didn't change the hardcoded schema either. So to benchmark this change, you would need to manually create the table in ClickHouse server yourself:
 ```
 CREATE TABLE IF NOT EXISTS otel_traces (
      Timestamp DateTime64(9) CODEC(Delta, ZSTD(1)),
