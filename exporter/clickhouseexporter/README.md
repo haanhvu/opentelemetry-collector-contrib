@@ -1,8 +1,6 @@
-This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Array[key] and Array[value]. The ultimate purpose is to do benchmarking to see which type choice performs better.
+This branch is created to add ClickHouse's asynchronous insert settings to each insert. The ultimate purpose is to do benchmarking on the asynchronous insert feature.
 
-I just changed the types in the implementation, not the tests. So some tests is probably failing. However, I checked the change locally with a small trace generating experiment. The change worked.
-
-I didn't change the hardcoded schema either. So to test this change, you would need to manually create the table in ClickHouse server yourself:
+This branch also uses the new data types from the [newtypes branch](https://github.com/haanhvu/opentelemetry-collector-contrib/tree/newtypes/exporter/clickhouseexporter#readme). So you would need to manually create the table in ClickHouse server yourself before set up the collector:
 ```
 CREATE TABLE IF NOT EXISTS otel_traces (
      Timestamp DateTime64(9) CODEC(Delta, ZSTD(1)),
@@ -56,4 +54,4 @@ To build this change locally:
 `make docker-otelcontribcol`
 
 To run the Docker image of this change:
-`docker run --network host --name otel -p 86.109.5.33:4317:4317 -p 86.109.5.33:8888:8888 -v $(pwd)/config.yaml:/etc/otel/config.yaml otelcontribcol`
+`docker run --network host --name otel -p 147.75.85.195:4317:4317 -p 147.75.85.195:8888:8888 -v $(pwd)/config.yaml:/etc/otel/config.yaml otelcontribcol`
