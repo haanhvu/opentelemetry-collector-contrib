@@ -1,4 +1,4 @@
-This branch is created to add ClickHouse's asynchronous insert settings to each insert. The ultimate purpose is to do benchmarking on the asynchronous insert feature.
+This branch is created to [add ClickHouse's asynchronous insert settings to each insert](https://github.com/haanhvu/opentelemetry-collector-contrib/blob/newtypes-asyncinsert/exporter/clickhouseexporter/exporter_traces.go#L241-L246). The ultimate purpose is to do benchmarking on the asynchronous insert feature.
 
 This branch also uses the new data types from the [newtypes branch](https://github.com/haanhvu/opentelemetry-collector-contrib/tree/newtypes/exporter/clickhouseexporter#readme). So you would need to manually create the table in ClickHouse server yourself before set up the collector:
 ```
