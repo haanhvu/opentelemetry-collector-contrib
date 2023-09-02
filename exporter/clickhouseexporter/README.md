@@ -1,4 +1,4 @@
-This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Nested (keys, values), and the type of duration from Int64 to UInt64. The ultimate purpose is to do benchmarking to see if the new type choices performs better.
+This branch is created to change the type of attributes in ClickHouse exporter schema from Map[key]value to Nested (keys, values), and the type of duration from Int64 to UInt64. The ultimate purpose is to do benchmarking to see if the new type choices perform better.
 
 I just changed the types in the implementation, not the tests. So some tests are probably failing. Regardless, I checked the change locally with a small trace generating experiment. The change worked.
 
